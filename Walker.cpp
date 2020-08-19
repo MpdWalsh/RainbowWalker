@@ -27,6 +27,10 @@ void Walker::setColour(const ci::ColorA &c) {
     colour = c;
 }
 
+float bounce(float boundary, float position) {
+    return 2 * boundary - position;
+}
+
 void Walker::step() {
     float minWidth = leftTopBound.x;
     float maxWidth = rightBottomBound.x;
@@ -39,20 +43,15 @@ void Walker::step() {
     float newY = position.y + delta.y;
 
     position.x = newX;
-    if (newX < minWidth) position.x = 2 * minWidth - newX;
-    if (newX > maxWidth) position.x = 2 * maxWidth - newX;
+    if (newX < minWidth) position.x = bounce(minWidth, newX);
+    if (newX > maxWidth) position.x = bounce(maxWidth, newX);
 
     position.y = newY;
-    if (newY < minHeight) position.y = 2 * minHeight - newY;
-    if (newY > maxHeight) position.y = 2 * maxHeight - newY;
+    if (newY < minHeight) position.y = bounce(minHeight, newY);
+    if (newY > maxHeight) position.y = bounce(maxHeight, newY);
 }
 
 void Walker::draw() const {
-    ci::gl::pushModelMatrix();
-
     ci::gl::color(colour);
-
     ci::gl::drawSolidCircle(position, size);
-
-    ci::gl::popModelMatrix();
 }
